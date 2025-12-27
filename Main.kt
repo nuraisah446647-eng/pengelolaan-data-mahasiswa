@@ -6,9 +6,7 @@ import javax.swing.table.DefaultTableModel
 import javax.xml.crypto.Data
 
 
-// =======================
-// LOGIN FRAME
-// =======================
+
 class LoginFrame : JFrame("Login Aplikasi") {
 
     private val txtUsername = JTextField(15)
@@ -79,9 +77,6 @@ class LoginFrame : JFrame("Login Aplikasi") {
     }
 }
 
-// =======================
-// APLIKASI MAHASISWA
-// =======================
 class AppMahasiswa(private val username: String) : JFrame("Pengelolaan Data Mahasiswa") {
     private fun tampilkanData() {
         model.rowCount = 0
@@ -141,7 +136,6 @@ class AppMahasiswa(private val username: String) : JFrame("Pengelolaan Data Maha
         defaultCloseOperation = EXIT_ON_CLOSE
         layout = BorderLayout(10, 10)
 
-        // ===== HEADER =====
         val btnLogout = JButton("Logout")
         val header = JPanel(BorderLayout())
         header.border = BorderFactory.createEmptyBorder(5, 10, 5, 10)
@@ -149,8 +143,7 @@ class AppMahasiswa(private val username: String) : JFrame("Pengelolaan Data Maha
         header.add(btnLogout, BorderLayout.EAST)
         add(header, BorderLayout.NORTH)
 
-        // ===== FORM =====
-        // ===== PANEL FORM (RAPI) =====
+
         val panelForm = JPanel(GridBagLayout())
         panelForm.border = BorderFactory.createTitledBorder(
             BorderFactory.createEtchedBorder(),
@@ -162,7 +155,7 @@ class AppMahasiswa(private val username: String) : JFrame("Pengelolaan Data Maha
         gbc.fill = GridBagConstraints.HORIZONTAL
         gbc.anchor = GridBagConstraints.WEST
 
-// Samakan ukuran field
+
         listOf(
             txtNim, txtNama, txtJurusan,
             txtSemester, txtTeknik, txtData, txtAplikasi
@@ -170,7 +163,7 @@ class AppMahasiswa(private val username: String) : JFrame("Pengelolaan Data Maha
             it.preferredSize = Dimension(220, 28)
         }
 
-        // Fungsi baris form
+
         fun row(label: String, field: JTextField, y: Int) {
             gbc.gridx = 0
             gbc.gridy = y
@@ -190,7 +183,7 @@ class AppMahasiswa(private val username: String) : JFrame("Pengelolaan Data Maha
         row("Nilai Data", txtData, 5)
         row("Nilai Aplikasi", txtAplikasi, 6)
 
-// ===== TOMBOL =====
+
         val btnSimpan = JButton("Simpan")
 
         val btnEdit = JButton("Edit")
@@ -210,7 +203,7 @@ class AppMahasiswa(private val username: String) : JFrame("Pengelolaan Data Maha
         gbc.insets = Insets(20, 10, 10, 10)
         panelForm.add(panelBtn, gbc)
 
-        // ===== TABEL =====
+
         val kolom = arrayOf("NIM", "Nama", "Jurusan", "Semester", "Teknik Optimasi", "Data Mining", "Aplikasi Mobile", "IPK")
         model = DefaultTableModel(kolom, 0)
         val table = JTable(model)
@@ -530,7 +523,7 @@ class AppMahasiswa(private val username: String) : JFrame("Pengelolaan Data Maha
             }
         }
 
-        // ===== ADD TO FRAME =====
+        
         add(panelForm, BorderLayout.WEST)
         add(panelTabel, BorderLayout.CENTER)
         add(lblTotal, BorderLayout.SOUTH)
