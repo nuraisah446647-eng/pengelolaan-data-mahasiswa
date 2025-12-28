@@ -1,10 +1,7 @@
 package org.example
-
 import java.awt.*
 import javax.swing.*
 import javax.swing.table.DefaultTableModel
-import javax.xml.crypto.Data
-
 
 
 class LoginFrame : JFrame("Login Aplikasi") {
@@ -179,9 +176,9 @@ class AppMahasiswa(private val username: String) : JFrame("Pengelolaan Data Maha
         row("Nama", txtNama, 1)
         row("Jurusan", txtJurusan, 2)
         row("Semester", txtSemester, 3)
-        row("Nilai Teknik", txtTeknik, 4)
-        row("Nilai Data", txtData, 5)
-        row("Nilai Aplikasi", txtAplikasi, 6)
+        row("Teknik Optimasi", txtTeknik, 4)
+        row("Data Mining", txtData, 5)
+        row("Aplikasi Mobile 1", txtAplikasi, 6)
 
 
         val btnSimpan = JButton("Simpan")
@@ -245,17 +242,17 @@ class AppMahasiswa(private val username: String) : JFrame("Pengelolaan Data Maha
 
             while (rs.next()) {
                 found = true
-                val Teknik = rs.getDouble("nilai_Teknik")
-                val Data = rs.getDouble("nilai_Data")
-                val Aplikasi = rs.getDouble("nilai_Aplikasi")
-                val ipk = (Teknik + Data + Aplikasi) / 3
+                val teknik = rs.getDouble("nilai_Teknik")
+                val data = rs.getDouble("nilai_Data")
+                val aplikasi = rs.getDouble("nilai_Aplikasi")
+                val ipk = (teknik + data + aplikasi) / 3
 
                 model.addRow(arrayOf(
                     rs.getString("nim"),
                     rs.getString("nama"),
                     rs.getString("jurusan"),
                     rs.getInt("semester"),
-                    Teknik, Data, Aplikasi,
+                    teknik, data, aplikasi,
                     String.format("%.2f", ipk)
                 ))
             }
@@ -312,15 +309,15 @@ class AppMahasiswa(private val username: String) : JFrame("Pengelolaan Data Maha
             val nama = txtNama.text.trim()
             val jurusan = txtJurusan.text.trim()
             val semesterText = txtSemester.text.trim()
-            val TeknikText = txtTeknik.text.trim()
-            val DataText = txtData.text.trim()
-            val AplikasiText = txtAplikasi.text.trim()
+            val teknikText = txtTeknik.text.trim()
+            val dataText = txtData.text.trim()
+            val aplikasiText = txtAplikasi.text.trim()
 
             // VALIDASI KOSONG
             if (
                 nim.isEmpty() || nama.isEmpty() || jurusan.isEmpty() ||
-                semesterText.isEmpty() || TeknikText.isEmpty() ||
-                DataText.isEmpty() || AplikasiText.isEmpty()
+                semesterText.isEmpty() || teknikText.isEmpty() ||
+                dataText.isEmpty() || aplikasiText.isEmpty()
             ) {
                 JOptionPane.showMessageDialog(
                     this,
@@ -333,9 +330,9 @@ class AppMahasiswa(private val username: String) : JFrame("Pengelolaan Data Maha
 
             try {
                 val semester = semesterText.toInt()
-                val Teknik = TeknikText.toDouble()
-                val Data = DataText.toDouble()
-                val Aplikasi = AplikasiText.toDouble()
+                val teknik = teknikText.toDouble()
+                val data = dataText.toDouble()
+                val aplikasi = aplikasiText.toDouble()
 
                 val conn = Database.getConnection()
                 val sql = """
@@ -349,9 +346,9 @@ class AppMahasiswa(private val username: String) : JFrame("Pengelolaan Data Maha
                 ps.setString(2, nama)
                 ps.setString(3, jurusan)
                 ps.setInt(4, semester)
-                ps.setDouble(5, Teknik)
-                ps.setDouble(6, Data)
-                ps.setDouble(7, Aplikasi)
+                ps.setDouble(5, teknik)
+                ps.setDouble(6, data)
+                ps.setDouble(7, aplikasi)
 
                 ps.executeUpdate()
 
@@ -363,24 +360,32 @@ class AppMahasiswa(private val username: String) : JFrame("Pengelolaan Data Maha
                 tampilkanData()   // ⬅️ ambil ulang dari database
                 resetForm()
 
-            } catch (e: NumberFormatException) {
-                JOptionPane.showMessageDialog(
-                    this,
-                    "Semester dan Nilai harus berupa angka!",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-                )
-            } catch (e: Exception) {
-                JOptionPane.showMessageDialog(
-                    this,
-                    "Gagal menyimpan data:\n${e.message}",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-                )
-            }
+            }  catch (e: NumberFormatException) {
+            JOptionPane.showMessageDialog(
+                this,
+                "Semester dan Nilai harus berupa angka!",
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            )
+
+            } catch (e: java.sql.SQLIntegrityConstraintViolationException) {
+            JOptionPane.showMessageDialog(
+                this,
+                "NIM sudah terdaftar!\nSilakan gunakan NIM lain.",
+                "Data Duplikat",
+                JOptionPane.ERROR_MESSAGE
+            )
+
+        } catch (e: Exception) {
+            JOptionPane.showMessageDialog(
+                this,
+                "Gagal menyimpan data ke database",
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            )
         }
 
-
+    }
 
         btnEdit.addActionListener {
 
@@ -398,14 +403,14 @@ class AppMahasiswa(private val username: String) : JFrame("Pengelolaan Data Maha
             val nama = txtNama.text.trim()
             val jurusan = txtJurusan.text.trim()
             val semesterText = txtSemester.text.trim()
-            val TeknikText = txtTeknik.text.trim()
-            val DataText = txtData.text.trim()
-            val AplikasiText = txtAplikasi.text.trim()
+            val teknikText = txtTeknik.text.trim()
+            val dataText = txtData.text.trim()
+            val aplikasiText = txtAplikasi.text.trim()
 
             if (
                 nim.isEmpty() || nama.isEmpty() || jurusan.isEmpty() ||
-                semesterText.isEmpty() || TeknikText.isEmpty() ||
-                DataText.isEmpty() || AplikasiText.isEmpty()
+                semesterText.isEmpty() || teknikText.isEmpty() ||
+                dataText.isEmpty() || aplikasiText.isEmpty()
             ) {
                 JOptionPane.showMessageDialog(this, "Semua field wajib diisi!")
                 return@addActionListener
@@ -413,9 +418,9 @@ class AppMahasiswa(private val username: String) : JFrame("Pengelolaan Data Maha
 
             try {
                 val semester = semesterText.toInt()
-                val Teknik = TeknikText.toDouble()
-                val Data = DataText.toDouble()
-                val Aplikasi = AplikasiText.toDouble()
+                val teknik = teknikText.toDouble()
+                val data = dataText.toDouble()
+                val aplikasi = aplikasiText.toDouble()
 
                 val conn = Database.getConnection()
                 val sql = """
@@ -429,9 +434,9 @@ class AppMahasiswa(private val username: String) : JFrame("Pengelolaan Data Maha
                 ps.setString(1, nama)
                 ps.setString(2, jurusan)
                 ps.setInt(3, semester)
-                ps.setDouble(4, Teknik)
-                ps.setDouble(5, Data)
-                ps.setDouble(6, Aplikasi)
+                ps.setDouble(4, teknik)
+                ps.setDouble(5, data)
+                ps.setDouble(6, aplikasi)
                 ps.setString(7, nim)
 
                 ps.executeUpdate()
@@ -451,8 +456,6 @@ class AppMahasiswa(private val username: String) : JFrame("Pengelolaan Data Maha
                 JOptionPane.showMessageDialog(this, e.message)
             }
         }
-
-
 
         btnHapus.addActionListener {
 
@@ -489,7 +492,6 @@ class AppMahasiswa(private val username: String) : JFrame("Pengelolaan Data Maha
             }
         }
 
-
         btnCari.addActionListener {
             val key = txtCari.text.lowercase()
             var found = false
@@ -522,7 +524,6 @@ class AppMahasiswa(private val username: String) : JFrame("Pengelolaan Data Maha
                 LoginFrame().isVisible = true
             }
         }
-
         
         add(panelForm, BorderLayout.WEST)
         add(panelTabel, BorderLayout.CENTER)
